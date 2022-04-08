@@ -19,6 +19,7 @@ function CreateVendorForm ({notify}) {
   const [businessPhone, setBusinessPhone] = useState("");
   const [businessEmail, setBusinessEmail] = useState("");
 
+  //random note
 
   async function submitData(e) {
     e.preventDefault();
