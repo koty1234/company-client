@@ -23,6 +23,7 @@ import UserContext from "../../context/user-context";
 
 function IncomingCreditApps (props) {
 
+  const {user} = useContext(UserContext);
 const [values, setValues] = useState({
   firstName: '',
   lastName: '',
@@ -35,12 +36,12 @@ const [values, setValues] = useState({
 
 
 async function tester(){
+if(user){
    let vendorId = "624d74197cb569ff4ecda450";
 let test = await Axios.get(`${domain}/masterapp/vendor/${vendorId}`,)
 console.log(test.data);
 }
-
-tester();
+}
 
 
 const orders = [

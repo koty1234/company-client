@@ -59,16 +59,19 @@ const Register = () => {
           'Last name is required'),
       phoneNumber: Yup
           .string()
-          .max(255)
+          .min(10)
+          .max(11)
           .required(
             'Phone number is required'),
       password: Yup
         .string()
+        .min(8)
         .max(255)
         .required(
           'Password is required'),
       passwordVerify: Yup
         .string()
+        .min(8)
         .max(255)
         .required(
           'Password is required'),
@@ -88,14 +91,14 @@ const Register = () => {
           phoneNumber: formik.values.phoneNumber,
           password: formik.values.password,
           passwordVerify: formik.values.passwordVerify,
-          userSide: "vendor",
+          userSide: "company",
         }
 
     try {
       let response = await Axios.post(`${domain}/user/`, userData)
         console.log(response);
         if(response.status == 200){
-         router.push('/register/vendor');
+         router.push('/register/company');
         }
       }
     catch (error) {

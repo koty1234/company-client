@@ -12,43 +12,41 @@ import {
 import Axios from 'axios';
 import domain from "../../utils/domain";
 
-function AccountProfileDetails (props) {
+function ReferenceItem (props) {
 
   const [values, setValues] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    position: '',
+    referenceId: props.referenceObject._id,
+    title: props.title,
+    companyId: props.companyId,
+    referenceName: props.referenceObject.referenceName || '',
+    referencePhoneNumber: props.referenceObject.referencePhoneNumber || '',
+    referenceEmail: props.referenceObject.referenceEmail || '',
+    refLength: props.referenceObject.refLength || '',
     pageReady: false,
     disabled: true,
   });
 
   useEffect(() => {
     setValues({
-      ...values,
-      firstName: props.user.firstName,
-      lastName: props.user.lastName,
-      email: props.user.email,
-      phone: props.user.phone || "",
-      position: props.user.position || "",
-      pageReady: true,
-    });
-
+        ...values,
+        pageReady : true,
+      });
   }, []);
 
-  async function saveUser() {
-    const userData = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      phone: values.phone,
-      position: values.position,
+  async function saveReference() {
+    const refData = {
+      companyId: values.companyId,
+      referenceName: values.referenceName,
+      referencePhoneNumber: values.referencePhoneNumber,
+      referenceEmail: values.referenceEmail,
+      refLength: values.refLength,
     }
+    console.log(values.referenceId);
 
-  let savedUser = await Axios.patch(`${domain}/user/`, userData);
-  console.log(savedUser);
+  let savedReference = await Axios.patch(`${domain}/reference/company/${values.referenceId}`, refData);
+  console.log(savedReference);
   }
+
 
   function allowEdit() {
     setValues({
@@ -68,19 +66,19 @@ function AccountProfileDetails (props) {
     <form
       autoComplete="off"
       noValidate
-      onSubmit = {saveUser}
+      onSubmit = {saveReference}
     >
-      <Card>
-        <CardHeader
-          subheader="Update your profile."
-          title="Profile"
-        />
-        <Divider />
         <CardContent>
           <Grid
             container
             spacing={3}
           >
+            <Grid
+            item
+            md={12}
+            xs={12}>
+            <h4>{values.title}</h4>
+            </Grid>
             <Grid
               item
               md={6}
@@ -88,12 +86,11 @@ function AccountProfileDetails (props) {
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
+                label="Company Name"
+                name="referenceName"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.referenceName}
                 variant="outlined"
                 disabled = {values.disabled}
               />
@@ -105,11 +102,12 @@ function AccountProfileDetails (props) {
             >
               <TextField
                 fullWidth
-                label="Last name"
-                name="lastName"
+                label="Phone Number"
+                name="referencePhoneNumber"
                 onChange={handleChange}
+                type="tel"
                 required
-                value={values.lastName}
+                value={values.referencePhoneNumber}
                 variant="outlined"
                 disabled = {values.disabled}
               />
@@ -122,12 +120,12 @@ function AccountProfileDetails (props) {
               <TextField
                 fullWidth
                 label="Email Address"
-                name="email"
+                name="referenceEmail"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={values.referenceEmail}
                 variant="outlined"
-                disabled
+                disabled = {values.disabled}
               />
             </Grid>
             <Grid
@@ -137,43 +135,24 @@ function AccountProfileDetails (props) {
             >
               <TextField
                 fullWidth
-                label="Phone Number"
-                name="phone"
+                label="Length of Relationship"
+                name="refLength"
                 onChange={handleChange}
                 type="number"
-                value={values.phone}
+                value={values.refLength}
                 variant="outlined"
                 disabled = {values.disabled}
               />
             </Grid>
-            <Grid
-              item
-              md={12}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Position"
-                name="position"
-                onChange={handleChange}
-                required
-                value={values.position}
-                variant="outlined"
-                disabled = {values.disabled}
-              />
-            </Grid>
-            
           </Grid>
-        </CardContent>
-        <Divider />
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            p: 2
+            pt: 2
           }}
         >
-<Grid
+          <Grid
               item
               md={12}
               xs={12}
@@ -197,11 +176,11 @@ function AccountProfileDetails (props) {
           </Button>
           </Grid>
         </Box>
-      </Card>
+        </CardContent>
     </form>
   );
 }
 else return null;
 }
 
-export default AccountProfileDetails;
+export default ReferenceItem;

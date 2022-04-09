@@ -12,7 +12,55 @@ import {
 import Axios from 'axios';
 import domain from "../../utils/domain";
 
-function VendorProfileDetails (props) {
+function CompanyProfileDetails (props) {
+
+  const revenueOptions = [
+    {
+      label: '$1 - $100,000',
+      value: '0',
+    },
+    {
+      label: '$100,000 - $500,000',
+      value: '1'
+    },
+    {
+      label: '$500,000 - $1,000,000',
+      value: '2'
+    },
+    {
+      label: '$1,000,000 - $2,500,000',
+      value: '3'
+    },
+    {
+      label: '$2,500,000 - $10,000,000',
+      value: '4'
+    },
+    {
+      label: '$10,000,000 - $50,000,000',
+      value: '5'
+    },
+    {
+      label: '$50,000,000+',
+      value: '6'
+    }
+  ];
+  
+  
+  const businessTypeOptions = [
+    {
+      label: 'Sole Proprietorship',
+      value: 'Sole Proprietorship',
+    },
+    {
+      label: 'Partnership',
+      value: 'Partnership'
+    },
+    {
+      label: 'Corporation',
+      value: 'Corporation'
+    }
+  ];
+
   const [values, setValues] = useState({
     companyName: '',
     address: '',
@@ -21,54 +69,63 @@ function VendorProfileDetails (props) {
     postalCode: '',
     presidentName: '',
     yib:'',
-    businessPhonee: '',
+    revenue: '',
+    businessPhone: '',
     businessEmail: '',
+    businessType: '',
     website: '',
-    vendorId: props.user.vendorId,
+    companyId: props.user.companyId,
     pageReady: false,
     disabled: true,
   });
 
+
   useEffect(() => {
-    getVendor();
+    getCompany();
   }, []);
 
 
-  async function saveVendor() {
-    const vendorData = {
+  async function saveCompany() {
+    const companyData = {
       companyName: values.companyName,
       address: values.address,
       city: values.city,
       state: values.state,
       postalCode: values.postalCode,
       presidentName: values.presidentName,
+      businessType: values.businessType,
+      revenue: values.revenue,
       yib: values.yib,
       businessPhone: values.businessPhone,
       businessEmail: values.businessEmail,
       website: values.website,
     }
 
-  await Axios.patch(`${domain}/vendor/${values.vendorId}`, vendorData);
+  await Axios.patch(`${domain}/company/${values.companyId}`, companyData);
   }
 
-  async function getVendor() {
-    let request = await Axios.get(`${domain}/vendor/${values.vendorId}`);
-    let vendor = request.data;
+  async function getCompany() {
+    if(values.companyId){
+    let request = await Axios.get(`${domain}/company/${values.companyId}`);
+    let company = request.data;
     setValues({
       ...values,
-      companyName: vendor.companyName || "",
-      address: vendor.address || "",
-      city : vendor.city || "",
-      state : vendor.state || "",
-      postalCode : vendor.postalCode || "",
-      presidentName : vendor.presidentName || "",
-      yib : vendor.yib || "",
-      businessPhone: vendor.businessPhone || "",
-      businessEmail: vendor.businessEmail || "",
-      website : vendor.website || "",
+      companyName: company.companyName || "",
+      address: company.address || "",
+      city : company.city || "",
+      state : company.state || "",
+      postalCode : company.postalCode || "",
+      presidentName : company.presidentName || "",
+      revenue: company.revenue || "",
+      yib : company.yib || "",
+      businessPhone: company.businessPhone || "",
+      businessEmail: company.businessEmail || "",
+      businessType: company.businessType || "",
+      website : company.website || "",
       pageReady: true,
     });
   }
+}
 
   function allowEdit() {
     setValues({
@@ -88,7 +145,7 @@ function VendorProfileDetails (props) {
     <form
       autoComplete="off"
       noValidate
-      onSubmit = {saveVendor}
+      onSubmit = {saveCompany}
     >
       <Card sx={{mt:10}}>
         <CardHeader
@@ -182,7 +239,7 @@ function VendorProfileDetails (props) {
             </Grid>
             <Grid
               item
-              md={6}
+              md={3}
               xs={12}
             >
               <TextField
@@ -196,9 +253,34 @@ function VendorProfileDetails (props) {
                 disabled = {values.disabled}
               />
             </Grid>
-            <Grid
+              <Grid
+          item
+          md={3}
+          xs={12}
+        >
+          <TextField
+            fullWidth
+            label="Business Type"
+            name="businessType"
+            defaultValue={values.businessType}
+            select
+            SelectProps={{ native: true }}
+            onChange={handleChange}
+            disabled = {values.disabled}
+          >
+          {businessTypeOptions.map((businessType) => (
+            <option
+              key={businessType.value}
+              value={businessType.value}
+            >
+              {businessType.label}
+            </option>
+          ))}
+            </TextField>
+        </Grid>
+        <Grid
               item
-              md={6}
+              md={3}
               xs={12}
             >
               <TextField
@@ -213,12 +295,38 @@ function VendorProfileDetails (props) {
               />
             </Grid>
             <Grid
+          item
+          md={3}
+          xs={12}
+        >
+          <TextField
+            fullWidth
+            label="Annual Revenue"
+            name="revenue"
+            select
+            defaultValue={values.revenue}
+            SelectProps={{ native: true }}
+            disabled = {values.disabled}
+            onChange={handleChange}
+          >
+          {revenueOptions.map((revenue) => (
+            <option
+              key={revenue.value}
+              value={revenue.value}
+            >
+              {revenue.label}
+            </option>
+          ))}
+            </TextField>
+        </Grid>
+            <Grid
               item
               md={6}
               xs={12}
             >
               <TextField
                 fullWidth
+                type="tel"
                 label="Primary Business Phone"
                 name="businessPhone"
                 onChange={handleChange}
@@ -270,30 +378,25 @@ function VendorProfileDetails (props) {
             p: 2
           }}
         >
-            <Grid
+<Grid
               item
-              md={2}
-              xs={6}
+              md={12}
+              xs={12}
               align="right"
             >
           <Button
+            sx={{mr:2}}
             color="warning"
             variant="contained"
             onClick={allowEdit}
           >
             Edit Details
           </Button>
-          </Grid>
-          <Grid
-              item
-              md={2}
-              xs={6}
-              align="right"
-            >
           <Button
             color="primary"
             variant="contained"
             type="submit"
+            disabled = {values.disabled}
           >
             Save Details
           </Button>
@@ -306,4 +409,4 @@ function VendorProfileDetails (props) {
 else return null;
 }
 
-export default VendorProfileDetails;
+export default CompanyProfileDetails;
