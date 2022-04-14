@@ -18,6 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VendorTop from 'src/components/account/vendor-top';
 
 const Register = () => {
   const {user} = useContext(UserContext);
@@ -126,6 +127,7 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
+        <VendorTop />
           <NextLink
             href="/login"
             passHref

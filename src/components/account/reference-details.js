@@ -15,11 +15,12 @@ import ReferenceItem from './reference-item';
 
 function ReferenceDetails (props) {
 
+  const [disable, setDisable] = useState(false);
+
   const [values, setValues] = useState({
     referenceArray: [],
     companyId: props.user.companyId,
     pageReady: false,
-    disabled: true,
   });
 
   async function getReferences() {
@@ -34,7 +35,6 @@ function ReferenceDetails (props) {
   useEffect(() => {
     getReferences();
   }, []);
-  console.log
   if(values.pageReady){
   return (
     <Grid 
@@ -46,9 +46,25 @@ function ReferenceDetails (props) {
       title="References"
     />
         <Divider />
-    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[0]} title ={"Reference 1"}/>
-    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[1]} title ={"Reference 2"}/>
-    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[2]} title ={"Reference 3"}/>
+    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[0]} title ={"Reference 1"} passData = {setDisable}/>
+    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[1]} title ={"Reference 2"} passData = {setDisable}/>
+    <ReferenceItem companyId = {values.companyId} referenceObject = {values.referenceArray[2]} title ={"Reference 3"} passData = {setDisable}/>
+    <Grid
+          item
+          md={12}
+          xs={12}
+          mr={2}
+          mb={2}
+          style={{display: 'flex', justifyContent: 'flex-end'}}
+          >
+          <Button
+          type="submit"
+          variant="contained"
+          disabled={disable}
+          >
+          Save
+        </Button>
+          </Grid>
     </Card>
     </Grid>
 

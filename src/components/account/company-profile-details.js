@@ -11,6 +11,9 @@ import {
 } from '@mui/material';
 import Axios from 'axios';
 import domain from "../../utils/domain";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark, faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import {COLORS} from 'src/theme/colors';
 
 function CompanyProfileDetails (props) {
 
@@ -74,15 +77,20 @@ function CompanyProfileDetails (props) {
     businessEmail: '',
     businessType: '',
     website: '',
+    logo: '',
+    banner: '',
     companyId: props.user.companyId,
     pageReady: false,
-    disabled: true,
+    disabled: false,
+    hidden: true,
+    showOpenArrow: true,
+    showCloseArrow: false,
   });
 
 
   useEffect(() => {
     getCompany();
-  }, []);
+  }, [values.logo]);
 
 
   async function saveCompany() {
@@ -107,9 +115,13 @@ function CompanyProfileDetails (props) {
   async function getCompany() {
     if(values.companyId){
     let request = await Axios.get(`${domain}/company/${values.companyId}`);
+    let logo = await Axios.get(`${domain}/file/company/logo/${values.companyId}`);
+    let banner = await Axios.get(`${domain}/file/company/banner/${values.companyId}`);
     let company = request.data;
     setValues({
       ...values,
+      logo: logo.data.url,
+      banner: banner.data.url,
       companyName: company.companyName || "",
       address: company.address || "",
       city : company.city || "",
@@ -127,12 +139,43 @@ function CompanyProfileDetails (props) {
   }
 }
 
-  function allowEdit() {
-    setValues({
-      ...values,
-      disabled : false,
-    });
-  }
+function flipValues() {
+  setValues({
+    ...values,
+    hidden:!values.hidden,
+    showCloseArrow: !values.showCloseArrow,
+    showOpenArrow: !values.showOpenArrow,
+  })
+}
+
+async function logoSelected (event) {
+  const file = event.target.files[0];
+  const fileDetails = new FormData();
+  fileDetails.append("companyId", values.companyId);
+  fileDetails.append("uploadFile", file);
+  fileDetails.append("type", "logo");
+  fileDetails.append("side", "company");
+  let savedFile = await Axios.post(`${domain}/file`, fileDetails, { headers: {'Content-Type': 'multipart/form-data'}});
+  setValues({
+    ...values,
+    logo: '',
+  })
+}
+
+async function bannerSelected (event) {
+console.log("here");
+const file = event.target.files[0]
+const fileDetails = new FormData();
+fileDetails.append("companyId", values.companyId);
+fileDetails.append("uploadFile", file);
+fileDetails.append("type", "banner");
+fileDetails.append("side", "company");
+let savedFile = await Axios.post(`${domain}/file`, fileDetails, { headers: {'Content-Type': 'multipart/form-data'}});
+setValues({
+  ...values,
+  logo: '',
+})
+}
 
   const handleChange = (event) => {
     setValues({
@@ -147,18 +190,156 @@ function CompanyProfileDetails (props) {
       noValidate
       onSubmit = {saveCompany}
     >
-      <Card sx={{mt:10}}>
-        <CardHeader
-          subheader="Update your company"
-          title="Company"
-        />
-        <Divider />
-        <CardContent>
+      <Card>
+          <Grid
+            container
+            spacing={3}
+            onClick={flipValues}
+          >
+                          <Grid
+              item
+              md={9}
+              xs={9}
+              m={3}
+            >
+              <h3>Company</h3>
+              <p>Update your company details.</p>
+            </Grid>
+                          <Grid
+              item
+              md={2}
+              xs={2}
+              mr={3}
+              mt={4}
+              align="right"
+            >
+              <div hidden={values.showOpenArrow}>
+              <FontAwesomeIcon onClick={flipValues} 
+              icon={faCircleXmark} 
+              size="2x" 
+              color={COLORS.closePlusButton}/>
+              </div>
+              <div hidden={values.showCloseArrow}>
+              <FontAwesomeIcon onClick={flipValues}
+              icon={faEdit} 
+              size="2x" 
+              color={COLORS.expandPlusButton}/>
+              </div>
+            </Grid>
+            </Grid>
+            <Divider />
+            <CardContent hidden={values.hidden}>
           <Grid
             container
             spacing={3}
           >
+                        <Grid
+              item
+              md={3}
+              xs={12}
+            >
+              <h5>Logo</h5>
+            </Grid>
             <Grid
+              item
+              md={9}
+              xs={12}
+            >
+              <h5>Banner</h5>
+            </Grid>
+                       <Grid
+            item
+            md={3}
+            xs={12}
+            >
+                      <div className="fileUploadButton">
+                      <label htmlFor="file-upload" className="file-upload">
+                      <Box
+                              sx={{
+                                backgroundColor: 'background.default',
+                                backgroundImage: `url(${values.logo})`,
+                                backgroundPosition: 'center',
+                                backgroundSize: 'contain',
+                                backgroundRepeat: "no-repeat",
+                                borderRadius: 1,
+                                padding: 1,
+                                display: 'flex',
+                                height: 200,
+                                justifyContent: 'right',
+                                overflow: 'hidden',
+                                '&:hover': {
+                                  backgroundColor: 'action.hover',
+                                  cursor: 'pointer',
+                                  opacity: 0.8
+                                }
+                              }}>
+                                                      <FontAwesomeIcon
+                        className="awesomeAboutPhoto"
+                        icon={faEdit}
+                        color="grey"
+                        size='1x'
+                      />
+                                </Box>
+                      </label>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        accept="image/x-png, image/jpeg, image/jpg"
+                        onChange={logoSelected}
+                        style={{display: "none"}}
+                      />
+                    </div>                                
+              </Grid>
+              <Grid
+            item
+            md={9}
+            xs={12}
+            >
+                      <div className="bannerUploadButton">
+                      <label htmlFor="banner-upload" className="banner-upload">
+                      <Box
+                              sx={{
+                                backgroundColor: 'background.default',
+                                backgroundImage: `url(${values.banner})`,
+                                backgroundPosition: 'center',
+                                backgroundSize: 'contain',
+                                backgroundRepeat: "no-repeat",
+                                borderRadius: 1,
+                                padding: 1,
+                                display: 'flex',
+                                height: 200,
+                                justifyContent: 'right',
+                                overflow: 'hidden',
+                                '&:hover': {
+                                  backgroundColor: 'action.hover',
+                                  cursor: 'pointer',
+                                  opacity: 0.8
+                                }
+                              }}>
+                                                      <FontAwesomeIcon
+                        className="awesomeAboutPhoto"
+                        icon={faEdit}
+                        color="grey"
+                        size='1x'
+                      />
+                                </Box>
+                      </label>
+                      <input
+                        id="banner-upload"
+                        type="file"
+                        accept="image/x-png, image/jpeg, image/jpg"
+                        onChange={bannerSelected}
+                        style={{display: "none"}}
+                      />
+                    </div>                                
+              </Grid>
+              <Grid
+            item
+            md={9}
+            xs={5}
+            >
+              </Grid>
+              <Grid
               item
               md={6}
               xs={12}
@@ -368,40 +549,23 @@ function CompanyProfileDetails (props) {
                 disabled = {values.disabled}
               />
             </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
-<Grid
+            <Divider />
+        <Grid
               item
               md={12}
-              xs={12}
+              xs={6}
               align="right"
             >
-          <Button
-            sx={{mr:2}}
-            color="warning"
-            variant="contained"
-            onClick={allowEdit}
-          >
-            Edit Details
-          </Button>
           <Button
             color="primary"
             variant="contained"
             type="submit"
-            disabled = {values.disabled}
           >
-            Save Details
+            Save
           </Button>
           </Grid>
-        </Box>
+        </Grid>
+        </CardContent>
       </Card>
     </form>
   );

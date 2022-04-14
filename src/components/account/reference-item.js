@@ -11,6 +11,10 @@ import {
 } from '@mui/material';
 import Axios from 'axios';
 import domain from "../../utils/domain";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { display } from '@mui/system';
+import { theme } from 'src/theme';
 
 function ReferenceItem (props) {
 
@@ -22,6 +26,8 @@ function ReferenceItem (props) {
     referencePhoneNumber: props.referenceObject.referencePhoneNumber || '',
     referenceEmail: props.referenceObject.referenceEmail || '',
     refLength: props.referenceObject.refLength || '',
+    editHidden: "show",
+    saveHidden: "hidden",
     pageReady: false,
     disabled: true,
   });
@@ -41,10 +47,14 @@ function ReferenceItem (props) {
       referenceEmail: values.referenceEmail,
       refLength: values.refLength,
     }
-    console.log(values.referenceId);
-
   let savedReference = await Axios.patch(`${domain}/reference/company/${values.referenceId}`, refData);
-  console.log(savedReference);
+  setValues({
+    ...values,
+    disabled : true,
+    editHidden: "show",
+    saveHidden: 'hidden',
+  });
+  props.passData(false);
   }
 
 
@@ -52,7 +62,10 @@ function ReferenceItem (props) {
     setValues({
       ...values,
       disabled : false,
+      editHidden: "hidden",
+      saveHidden: 'show',
     });
+    props.passData(true);
   }
 
   const handleChange = (event) => {
@@ -61,17 +74,41 @@ function ReferenceItem (props) {
       [event.target.name]: event.target.value
     });
   }
+
+function iconSwapper(){
+  if(values.editHidden == "show"){
+  return(
+  <FontAwesomeIcon
+  className="awesomeAboutPhoto"
+  icon={faEdit}
+  color="#004dc9"
+  size='2x'
+  onClick={allowEdit}
+                        />
+  );
+  }
+  if(values.saveHidden == "show"){
+  return(
+                                      <FontAwesomeIcon
+  className="awesomeAboutPhoto"
+  icon={faCheck}
+  color="green"
+  size='2x'
+  onClick={saveReference}
+                        />);
+  }
+}
+
   if(values.pageReady){
   return (
     <form
       autoComplete="off"
       noValidate
-      onSubmit = {saveReference}
     >
         <CardContent>
           <Grid
             container
-            spacing={3}
+            spacing={2}
           >
             <Grid
             item
@@ -81,8 +118,8 @@ function ReferenceItem (props) {
             </Grid>
             <Grid
               item
-              md={6}
-              xs={12}
+              md={2.90}
+              xs={6}
             >
               <TextField
                 fullWidth
@@ -97,8 +134,8 @@ function ReferenceItem (props) {
             </Grid>
             <Grid
               item
-              md={6}
-              xs={12}
+              md={2.90}
+              xs={6}
             >
               <TextField
                 fullWidth
@@ -114,8 +151,8 @@ function ReferenceItem (props) {
             </Grid>
             <Grid
               item
-              md={6}
-              xs={12}
+              md={2.90}
+              xs={6}
             >
               <TextField
                 fullWidth
@@ -130,8 +167,8 @@ function ReferenceItem (props) {
             </Grid>
             <Grid
               item
-              md={6}
-              xs={12}
+              md={2.90}
+              xs={6}
             >
               <TextField
                 fullWidth
@@ -144,38 +181,15 @@ function ReferenceItem (props) {
                 disabled = {values.disabled}
               />
             </Grid>
-          </Grid>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            pt: 2
-          }}
-        >
-          <Grid
+            <Grid
               item
-              md={12}
-              xs={12}
-              align="right"
+              md={0.40}
+              xs={0.40}
+              mt={1}
             >
-          <Button
-            sx={{mr:2}}
-            color="warning"
-            variant="contained"
-            onClick={allowEdit}
-          >
-            Edit Details
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            disabled = {values.disabled}
-          >
-            Save Details
-          </Button>
+          {iconSwapper()}
           </Grid>
-        </Box>
+          </Grid>
         </CardContent>
     </form>
   );

@@ -12,12 +12,22 @@ function UserContextProvider(props) {
     const [ready, setReady] = useState(false);
 
     async function getUser() {
-        const userRes = await Axios.get(`${domain}/user/isloggedin`);
-        if(!userRes.data) {router.push('/register');
+        const userRes = await Axios.get(`${domain}/user/isLoggedIn`);
+        if(!userRes.data) {
+        router.push('/register');
         setReady(true);
+        return;
+        }
+
+        const userDetails = await Axios.get(`${domain}/user`);
+        if(!userDetails.data.companyId) {
+            router.push('/register/company');
+            setReady(true);
+            return;
         }
         else{
-        setUser(userRes.data);
+        setUser(userDetails.data);
+        console.log(user);
         setReady(true);
         }
     }
