@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import { Divider } from '@mui/material';
 import { gtm } from '../../components/lib/gtm';
-import  CreateCompanyForm from '../../components/aaa-components/create-company-form';
+import CustomQuestionsForm from 'src/components/account/custom-questions-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { TopSection } from '../../components/aaa-components/top-section';
 import VendorTop from 'src/components/account/vendor-top';
 
-const CompanyCreate = () => {
+const CustomQuestions = () => {
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
@@ -28,10 +27,10 @@ const CompanyCreate = () => {
       <ToastContainer />
       <VendorTop />
       <Divider />
-    <CreateCompanyForm notify={notify}></CreateCompanyForm>
+    <CustomQuestionsForm notify={notify}></CustomQuestionsForm>
       </main>
     </>
   );
 };
 
-export default CompanyCreate;
+export default CustomQuestions;

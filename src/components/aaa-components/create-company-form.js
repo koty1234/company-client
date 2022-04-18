@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import {React, useState} from 'react';
 import Axios, * as others from "axios";
 import { useRouter } from 'next/router';
@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function CreateCompanyForm ({notify}) {
+function CreateCompanyForm (props) {
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
@@ -69,8 +69,6 @@ const businessTypeOptions = [
   }
 ];
 
-
-
   async function submitData(e) {
     e.preventDefault();
     const companyData = {
@@ -88,7 +86,8 @@ const businessTypeOptions = [
     }
 try {
     await Axios.post(`${domain}/company/`, companyData)
-    router.push('/');
+    props.hide(true);
+    props.next(false);
   }
 catch (error) {
   notify(error.response);
@@ -97,24 +96,30 @@ catch (error) {
 
 
   return (
-  <Box
-    sx={{
-      backgroundColor: 'background.paper',
-      minHeight: '100%',
-      p: 3
-    }}
-  >
     <form onSubmit={submitData}>
-      <Grid
-        container
-        spacing={3}
-      >
-        <Grid
+        <Box sx={{ my: 3 }}>
+              <Typography
+                color="textPrimary"
+                variant="h4"
+              >
+                Enter Company Details
+              </Typography>
+              <Typography
+                color="textSecondary"
+                gutterBottom
+                variant="body2"
+              >
+                Tell us about your company.
+              </Typography>
+            </Box>
+            <Grid 
+      container
+      spacing={3}>
+            <Grid
           item
           md={6}
           xs={12}
         >
-          <ToastContainer />
           <TextField
             fullWidth
             label="Company Name"
@@ -289,16 +294,18 @@ catch (error) {
           xs={12}
           style={{display: 'flex', justifyContent: 'flex-end'}}
           >
-          <Button
-          type="submit"
-          variant="contained"
-          >
-          Next
-        </Button>
+              <Button
+                color="primary"
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                Next
+              </Button>
           </Grid>
       </Grid>
     </form>
-  </Box>
   );
   }
 

@@ -54,7 +54,14 @@ function ReferenceItem (props) {
     editHidden: "show",
     saveHidden: 'hidden',
   });
-  props.passData(false);
+  console.log(refData.referenceName);
+  if(refData.referenceName == " "){
+    console.log("Hi");
+  props.passData(true);
+  }
+  else {
+    props.passData(false);
+  }
   }
 
 
@@ -95,7 +102,9 @@ function iconSwapper(){
   color="green"
   size='2x'
   onClick={saveReference}
-                        />);
+                        />
+  
+                        );
   }
 }
 

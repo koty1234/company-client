@@ -21,20 +21,19 @@ function UserContextProvider(props) {
 
         const userDetails = await Axios.get(`${domain}/user`);
         if(!userDetails.data.companyId) {
-            router.push('/register/company');
+            router.push('/register');
             setReady(true);
             return;
         }
         else{
         setUser(userDetails.data);
-        console.log(user);
         setReady(true);
         }
     }
 
     useEffect(() =>{
         getUser();
-    }, []);
+    }, [ready]);
 
     // allows time to check if browswer is logged in or not.
     if(!ready) return null;

@@ -6,10 +6,10 @@ import domain from "../../utils/domain";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function VendorTop () {
+function VendorTop (props) {
 
     const [values, setValues] = useState({
-        vendorId: "62558e4313dfed8fda1b9a1b",
+        vendorId: props.vendorId,
         companyName: "",
         logo: "",
         pageReady: false,
@@ -35,6 +35,7 @@ function VendorTop () {
             <Grid
                   container
                   spacing={3}
+                  mb={5}
                 >
                     <Grid
                     item
