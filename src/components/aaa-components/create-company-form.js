@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import {React, useState} from 'react';
 import Axios, * as others from "axios";
 import { useRouter } from 'next/router';
@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function CreateVendorForm ({notify}) {
+function CreateCompanyForm (props) {
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
@@ -18,11 +18,60 @@ function CreateVendorForm ({notify}) {
   const [yib, setYib] = useState("");
   const [businessPhone, setBusinessPhone] = useState("");
   const [businessEmail, setBusinessEmail] = useState("");
+  const [businessType, setBusinessType] = useState("");
+  const [revenue, setRevenue] = useState("");
 
+//for revenue select field ONLY
+const revenueOptions = [
+  {
+    label: '$1 - $100,000',
+    value: '0',
+  },
+  {
+    label: '$100,000 - $500,000',
+    value: '1'
+  },
+  {
+    label: '$500,000 - $1,000,000',
+    value: '2'
+  },
+  {
+    label: '$1,000,000 - $2,500,000',
+    value: '3'
+  },
+  {
+    label: '$2,500,000 - $10,000,000',
+    value: '4'
+  },
+  {
+    label: '$10,000,000 - $50,000,000',
+    value: '5'
+  },
+  {
+    label: '$50,000,000+',
+    value: '6'
+  }
+];
+
+
+const businessTypeOptions = [
+  {
+    label: 'Sole Proprietorship',
+    value: 'Sole Proprietorship',
+  },
+  {
+    label: 'Partnership',
+    value: 'Partnership'
+  },
+  {
+    label: 'Corporation',
+    value: 'Corporation'
+  }
+];
 
   async function submitData(e) {
     e.preventDefault();
-    const vendorData = {
+    const companyData = {
       companyName: companyName,
       address: address,
       city: city,
@@ -32,10 +81,13 @@ function CreateVendorForm ({notify}) {
       yib: yib,
       businessPhone: businessPhone,
       businessEmail: businessEmail,
+      businessType: businessType,
+      revenue: revenue,
     }
 try {
-    await Axios.post(`${domain}/vendor/`, vendorData)
-    router.push('/');
+    await Axios.post(`${domain}/company/`, companyData)
+    props.hide(true);
+    props.next(false);
   }
 catch (error) {
   notify(error.response);
@@ -44,24 +96,30 @@ catch (error) {
 
 
   return (
-  <Box
-    sx={{
-      backgroundColor: 'background.paper',
-      minHeight: '100%',
-      p: 3
-    }}
-  >
     <form onSubmit={submitData}>
-      <Grid
-        container
-        spacing={3}
-      >
-        <Grid
+        <Box sx={{ my: 3 }}>
+              <Typography
+                color="textPrimary"
+                variant="h4"
+              >
+                Enter Company Details
+              </Typography>
+              <Typography
+                color="textSecondary"
+                gutterBottom
+                variant="body2"
+              >
+                Tell us about your company.
+              </Typography>
+            </Box>
+            <Grid 
+      container
+      spacing={3}>
+            <Grid
           item
           md={6}
           xs={12}
         >
-          <ToastContainer />
           <TextField
             fullWidth
             label="Company Name"
@@ -130,7 +188,7 @@ catch (error) {
         </Grid>
         <Grid
           item
-          md={6}
+          md={3}
           xs={12}
         >
           <TextField
@@ -144,7 +202,30 @@ catch (error) {
         </Grid>
         <Grid
           item
-          md={6}
+          md={3}
+          xs={12}
+        >
+          <TextField
+            fullWidth
+            label="Business Type"
+            name="businessType"
+            select
+            SelectProps={{ native: true }}
+            onChange={(e) => setBusinessType(e.target.value)}
+          >
+          {businessTypeOptions.map((businessType) => (
+            <option
+              key={businessType.value}
+              value={businessType.value}
+            >
+              {businessType.label}
+            </option>
+          ))}
+            </TextField>
+        </Grid>
+        <Grid
+          item
+          md={3}
           xs={12}
         >
           <TextField
@@ -155,6 +236,29 @@ catch (error) {
             value={yib}
             onChange={(e) => setYib(e.target.value)}
           />
+        </Grid>
+        <Grid
+          item
+          md={3}
+          xs={12}
+        >
+          <TextField
+            fullWidth
+            label="Annual Revenue"
+            name="revenue"
+            select
+            SelectProps={{ native: true }}
+            onChange={(e) => setRevenue(e.target.value)}
+          >
+          {revenueOptions.map((revenue) => (
+            <option
+              key={revenue.value}
+              value={revenue.value}
+            >
+              {revenue.label}
+            </option>
+          ))}
+            </TextField>
         </Grid>
         <Grid
           item
@@ -190,17 +294,19 @@ catch (error) {
           xs={12}
           style={{display: 'flex', justifyContent: 'flex-end'}}
           >
-          <Button
-          type="submit"
-          variant="contained"
-          >
-          Next
-        </Button>
+              <Button
+                color="primary"
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                Next
+              </Button>
           </Grid>
       </Grid>
     </form>
-  </Box>
   );
   }
 
-  export default CreateVendorForm;
+  export default CreateCompanyForm;

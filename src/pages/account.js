@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { gtm } from '../components/lib/gtm';
 import AccountProfileDetails  from "../components/account/account-profile-details";
-import VendorProfileDetails from "../components/account/vendor-profile-details";
+import CompanyProfileDetails from "../components/account/company-profile-details";
 import { DashboardLayout } from '../components/dashboard-layout';
 import Axios from 'axios';
 import domain from "../utils/domain";
+import ReferenceDetails from 'src/components/account/reference-details';
 
 const Account = () => {
 
@@ -64,9 +65,17 @@ const Account = () => {
             md={12}
             xs={12}
           >
-          </Grid>
           <AccountProfileDetails user={values.accountDetails}/>
-          <VendorProfileDetails user={values.accountDetails}/>
+          </Grid>
+          <Grid
+            item
+            lg={12}
+            md={12}
+            xs={12}
+          >
+          <CompanyProfileDetails user={values.accountDetails}/>
+          </Grid>
+          <ReferenceDetails user={values.accountDetails}/>
         </Grid>
       </Container>
     </Box>

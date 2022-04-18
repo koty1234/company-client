@@ -9,6 +9,9 @@ import {
   Grid,
   TextField
 } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark, faEdit } from '@fortawesome/free-solid-svg-icons';
+import {COLORS} from 'src/theme/colors';
 import Axios from 'axios';
 import domain from "../../utils/domain";
 
@@ -21,7 +24,10 @@ function AccountProfileDetails (props) {
     phone: '',
     position: '',
     pageReady: false,
-    disabled: true,
+    disabled: false,
+    hidden: true,
+    showOpenArrow: true,
+    showCloseArrow: false,
   });
 
   useEffect(() => {
@@ -57,6 +63,15 @@ function AccountProfileDetails (props) {
     });
   }
 
+  function flipValues() {
+    setValues({
+      ...values,
+      hidden:!values.hidden,
+      showCloseArrow: !values.showCloseArrow,
+      showOpenArrow: !values.showOpenArrow,
+    })
+  }
+
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -71,12 +86,44 @@ function AccountProfileDetails (props) {
       onSubmit = {saveUser}
     >
       <Card>
-        <CardHeader
-          subheader="Update your profile."
-          title="Profile"
-        />
+      <Grid
+            container
+            spacing={3}
+            onClick={flipValues}
+          >
+              <Grid
+              item
+              md={9}
+              xs={9}
+              m={3}
+            >
+              <h3>Profile</h3>
+              <p>Update your profile.</p>
+            </Grid>
+            <Grid
+              item
+              md={2}
+              xs={2}
+              mr={3}
+              mt={4}
+              align="right"
+            >
+              <div hidden={values.showOpenArrow}>
+              <FontAwesomeIcon onClick={flipValues} 
+              icon={faCircleXmark} 
+              size="2x" 
+              color={COLORS.closePlusButton}/>
+              </div>
+              <div hidden={values.showCloseArrow}>
+              <FontAwesomeIcon onClick={flipValues}
+              icon={faEdit} 
+              size="2x" 
+              color={COLORS.expandPlusButton}/>
+              </div>
+            </Grid>
+              </Grid>
         <Divider />
-        <CardContent>
+        <CardContent hidden={values.hidden}>
           <Grid
             container
             spacing={3}
@@ -162,34 +209,10 @@ function AccountProfileDetails (props) {
                 disabled = {values.disabled}
               />
             </Grid>
-            
-          </Grid>
-        </CardContent>
         <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
             <Grid
               item
-              md={2}
-              xs={6}
-              align="right"
-            >
-          <Button
-            color="warning"
-            variant="contained"
-            onClick={allowEdit}
-          >
-            Edit Details
-          </Button>
-          </Grid>
-          <Grid
-              item
-              md={2}
+              md={12}
               xs={6}
               align="right"
             >
@@ -197,11 +220,13 @@ function AccountProfileDetails (props) {
             color="primary"
             variant="contained"
             type="submit"
+            disabled = {values.disabled}
           >
             Save Details
           </Button>
           </Grid>
-        </Box>
+        </Grid>
+        </CardContent>
       </Card>
     </form>
   );

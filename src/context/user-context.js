@@ -12,19 +12,31 @@ function UserContextProvider(props) {
     const [ready, setReady] = useState(false);
 
     async function getUser() {
-        const userRes = await Axios.get(`${domain}/user/isloggedin`);
-        setUser(userRes);
+        const userRes = await Axios.get(`${domain}/user/isLoggedIn`);
+        if(!userRes.data) {
+        router.push('/register');
         setReady(true);
+        return;
+        }
+
+        const userDetails = await Axios.get(`${domain}/user`);
+        if(!userDetails.data.companyId) {
+            router.push('/register');
+            setReady(true);
+            return;
+        }
+        else{
+        setUser(userDetails.data);
+        setReady(true);
+        }
     }
 
     useEffect(() =>{
         getUser();
-
-    }, []);
+    }, [ready]);
 
     // allows time to check if browswer is logged in or not.
     if(!ready) return null;
-    if(!user) router.push('/register');
   return <UserContext.Provider value={{user, getUser}}>{props.children}</UserContext.Provider>
 };
 

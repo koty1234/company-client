@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import { Divider } from '@mui/material';
 import { gtm } from '../../components/lib/gtm';
-import  CreateVendorForm  from '../../components/aaa-components/create-vendor-form';
+import CustomQuestionsForm from 'src/components/account/custom-questions-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { TopSection } from '../../components/aaa-components/top-section';
+import VendorTop from 'src/components/account/vendor-top';
 
-const VendorCreate = () => {
+const CustomQuestions = () => {
   useEffect(() => {
     gtm.push({ event: 'page_view' });
   }, []);
@@ -25,12 +25,12 @@ const VendorCreate = () => {
       </Head>
       <main>
       <ToastContainer />
-      <TopSection />
+      <VendorTop />
       <Divider />
-    <CreateVendorForm notify={notify}></CreateVendorForm>
+    <CustomQuestionsForm notify={notify}></CustomQuestionsForm>
       </main>
     </>
   );
 };
 
-export default VendorCreate;
+export default CustomQuestions;
