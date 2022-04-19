@@ -25,6 +25,8 @@ function ReferenceItem (props) {
     referenceName: props.referenceObject.referenceName || '',
     referencePhoneNumber: props.referenceObject.referencePhoneNumber || '',
     referenceEmail: props.referenceObject.referenceEmail || '',
+    referenceAddress: props.referenceObject.referenceAddress || "",
+    referenceContact: props.referenceObject.referenceContact || '',
     refLength: props.referenceObject.refLength || '',
     editHidden: "show",
     saveHidden: "hidden",
@@ -45,6 +47,8 @@ function ReferenceItem (props) {
       referenceName: values.referenceName,
       referencePhoneNumber: values.referencePhoneNumber,
       referenceEmail: values.referenceEmail,
+      referenceAddress: values.referenceAddress,
+      referenceContact: values.referenceContact,
       refLength: values.refLength,
     }
   let savedReference = await Axios.patch(`${domain}/reference/company/${values.referenceId}`, refData);
@@ -56,7 +60,6 @@ function ReferenceItem (props) {
   });
   console.log(refData.referenceName);
   if(refData.referenceName == " "){
-    console.log("Hi");
   props.passData(true);
   }
   else {
@@ -121,14 +124,21 @@ function iconSwapper(){
           >
             <Grid
             item
-            md={12}
-            xs={12}>
+            md={11.5}
+            xs={11.5}>
             <h4>{values.title}</h4>
             </Grid>
             <Grid
               item
-              md={2.90}
-              xs={6}
+              md={0.50}
+              xs={0.50}
+            >
+          {iconSwapper()}
+          </Grid>
+            <Grid
+              item
+              md={4}
+              xs={4}
             >
               <TextField
                 fullWidth
@@ -143,7 +153,39 @@ function iconSwapper(){
             </Grid>
             <Grid
               item
-              md={2.90}
+              md={8}
+              xs={8}
+            >
+              <TextField
+                fullWidth
+                label="Address"
+                name="referenceAddress"
+                onChange={handleChange}
+                required
+                value={values.referenceAddress}
+                variant="outlined"
+                disabled = {values.disabled}
+              />
+            </Grid>
+            <Grid
+              item
+              md={3}
+              xs={6}
+            >
+              <TextField
+                fullWidth
+                label="Contact Person"
+                name="referenceContact"
+                onChange={handleChange}
+                required
+                value={values.referenceContact}
+                variant="outlined"
+                disabled = {values.disabled}
+              />
+            </Grid>
+            <Grid
+              item
+              md={3}
               xs={6}
             >
               <TextField
@@ -160,7 +202,7 @@ function iconSwapper(){
             </Grid>
             <Grid
               item
-              md={2.90}
+              md={3}
               xs={6}
             >
               <TextField
@@ -176,7 +218,7 @@ function iconSwapper(){
             </Grid>
             <Grid
               item
-              md={2.90}
+              md={3}
               xs={6}
             >
               <TextField
@@ -190,14 +232,6 @@ function iconSwapper(){
                 disabled = {values.disabled}
               />
             </Grid>
-            <Grid
-              item
-              md={0.40}
-              xs={0.40}
-              mt={1}
-            >
-          {iconSwapper()}
-          </Grid>
           </Grid>
         </CardContent>
     </form>
